@@ -1,0 +1,18 @@
+import jdatetime
+import pandas as pd
+import datetime
+import csv
+
+input('1')
+df = pd.read_csv('dts_sub.csv', header=None)
+i = 0
+print(len(df))
+input('2')
+for i in range(len(df)):
+    pdate=str(df.values[i,2])
+    gregorian_date = str(jdatetime.date(year=int(pdate[0:4]), month=int(pdate[4:6]), day=int(pdate[6:8])).togregorian())
+    replace = datetime.datetime.strptime(gregorian_date, '%Y-%m-%d').strftime('%Y%m%d')
+    df._set_value(i,2,replace)
+    # print(i)
+df.to_csv('dts_sub.csv', index=False)
+print('done')

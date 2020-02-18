@@ -1,0 +1,26 @@
+import pandas as pd
+
+df = pd.read_csv('dts_sub.csv')
+cleanDateRow = pd.DataFrame( filter(lambda x:x!=0, df['2']))
+r=cleanDateRow.quantile([0.2, 0.4, 0.6, 0.8])
+print('r\n',r)
+print('f\n',pd.qcut(df['3'],2,labels=[1,2]))
+print('m\n',pd.qcut(df['4'],5,labels=[1,2,3,4,5]))
+i = 0
+for item in df['2']:
+    if item == 0:
+        df._set_value(i, '2', 1)
+    elif item <= r.values[0]:
+        df._set_value(i, '2', 5)
+    elif item <= r.values[1]:
+        df._set_value(i, '2', 4)
+    elif item <= r.values[2]:
+        df._set_value(i, '2', 3)
+    elif item <= r.values[3]:
+        df._set_value(i, '2', 2)
+    else:
+        df._set_value(i, '2', 1)
+    i += 1
+df['3'] = pd.qcut(df['3'],2,labels=[1,2])
+df['4'] = pd.qcut(df['4'],5,labels=[1,2,3,4,5])
+df.to_csv('dts_sub.csv',index=None)

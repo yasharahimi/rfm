@@ -1,0 +1,29 @@
+import pandas as pd
+from datetime import date
+
+orginalFaile = pd.read_csv('dts_sub.csv', header=None)
+tmpFaile = pd.read_csv('tmp.csv', header=None)
+print('total row is ',len(orginalFaile))
+for i in range(len(orginalFaile)):
+    msisdnOrg = orginalFaile.values[i,1]
+    dateOrg = str(orginalFaile.values[i,2])
+    for j in range(len(tmpFaile)):
+        msisdnTmp = int(tmpFaile.values[j,0])
+        dateTmp = str(int(tmpFaile.values[j,1]))
+        if msisdnOrg == msisdnTmp:
+            gap = abs(date(year=int(dateOrg[0:4]), month=int(dateOrg[4:6]), day=int(dateOrg[6:8]))-date(year=int(dateTmp[0:4]), month=int(dateTmp[4:6]), day=int(dateTmp[6:8]))).days
+            tmpFaile._set_value(j,1,dateOrg)
+            orginalFaile._set_value(i,2,gap)
+            flag = 0   
+            break
+        else:
+            flag = 1
+    if flag == 1:
+        temp = j+1
+        tmpFaile._set_value(temp,0,msisdnOrg)
+        tmpFaile._set_value(temp,1,dateOrg)
+        orginalFaile._set_value(i,2,0)
+    # print(i)
+tmpFaile.to_csv('tmp.csv', index=None)
+orginalFaile.to_csv('dts_sub.csv',index=None)
+print(len(tmpFaile))
